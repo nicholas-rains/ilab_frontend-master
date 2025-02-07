@@ -1,0 +1,11 @@
+/* Container styles */
+.datePickerContainer {
+    margin-left: 20px; /* Move it over a bit on the left side */
+    width: calc(100% - 40px); /* Make it wider */
+  }
+  
+  /* DatePicker input field styles */
+  .datePickerInput {
+    width: 100%; /* Ensure the input field takes up all available space */
+  }
+  
