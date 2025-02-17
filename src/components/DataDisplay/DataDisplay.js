@@ -1,8 +1,8 @@
-import React from "react";
-import { useTheme } from "@mui/material";
-import { Box, Paper, Typography, Divider } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { useSQL } from "../../context/SqlContext";
+import React, { useState, useEffect } from 'react';
+import { useTheme } from '@mui/material';
+import { Box, Paper, Typography, Divider } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { useSQL } from '../../context/SqlContext';
 
 /**
  * @param {Array} data - rows for the data grid
@@ -15,17 +15,34 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
   const theme = useTheme();
   const { showSQL } = useSQL();
 
+  // State to control whether the SQL query display is cleared
+  const [cleared, setCleared] = useState(false);
+
+  // Clear the SQL display whenever a new user query is submitted
+  useEffect(() => {
+    setCleared(true);
+  }, [userQuery]);
+
+  // When a new SQL query comes in, display it (if non-empty)
+  useEffect(() => {
+    if (query && query.length > 0) {
+      setCleared(false);
+    }
+  }, [query]);
+
   return (
     <Paper
       sx={{
-        width: "100%",
-        margin: "2rem 0",
-        padding: "20px",
-        minHeight: "80vh",
-        border: "1px solid #ccc",
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-        display: "flex",
-        flexDirection: "column",
+        width: '100%',
+        margin: '2rem 0',
+        padding: '20px',
+        minHeight: '80vh',
+        maxHeight: '80vh',
+        border: '1px solid #ccc',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'auto' // Enables vertical scrolling
       }}
     >
       {/* Title */}
@@ -34,19 +51,19 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
       </Typography>
 
       {/* User Query Section */}
-      <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         User Query:
       </Typography>
       <Box
         sx={{
-          padding: "1rem",
+          padding: '1rem',
           backgroundColor: theme.palette.background.default,
-          borderRadius: "8px",
+          borderRadius: '8px',
           mb: 2,
         }}
       >
-        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-          {userQuery || "No user query yet."}
+        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+          {userQuery || 'No user query yet.'}
         </Typography>
       </Box>
 
@@ -55,31 +72,31 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
       {/* SQL Query Section (Toggle-Controlled) */}
       {showSQL && (
         <>
-          <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
             Generated SQL:
           </Typography>
           <Box
             sx={{
-              padding: "1rem",
+              padding: '1rem',
               backgroundColor: theme.palette.background.default,
-              borderRadius: "8px",
+              borderRadius: '8px',
               mb: 2,
-              width: "100%",
-              overflowX: "auto", // Enable horizontal scrolling
-              minWidth: 0,
+              width: '100%',
             }}
           >
             <pre
               style={{
                 margin: 0,
-                whiteSpace: "pre", // Preserve formatting without wrapping
-                width: "max-content", // Let the <pre> element be as wide as its content
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
               }}
             >
               <code>
-                {query && query.length > 0
+                {cleared
+                  ? '-- SQL Query cleared.'
+                  : query && query.length > 0
                   ? `-- SQL Query:\n${query}`
-                  : "No SQL generated. Please ask a question to generate SQL."}
+                  : 'No SQL generated. Please ask a question to generate SQL.'}
               </code>
             </pre>
           </Box>
@@ -89,7 +106,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
       )}
 
       {/* Data Grid Section */}
-      <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         Data Results:
       </Typography>
       <Box sx={{ flexGrow: 1 }}>
@@ -97,7 +114,12 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
           <DataGrid
             rows={data}
             columns={columns}
-            getRowId={(row) => row.customer_id || row.account_id || row.id}
+            getRowId={(row) =>
+              row.customer_id ||
+              row.account_id ||
+              row.id ||
+              `${Math.random()}-${Date.now()}`
+            }
             autoHeight
             disableSelectionOnClick
             pageSize={5}
