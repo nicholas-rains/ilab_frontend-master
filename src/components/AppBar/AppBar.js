@@ -39,32 +39,32 @@ function AppBarComponent({ open, handleDrawerOpen, currentTheme, toggleTheme }) 
               variant="h4" 
               noWrap 
               component="div" 
-              sx={{ flexGrow: 1, color: theme.palette.primary.main }} // Blue text
+              sx={{ flexGrow: 1, color: theme.palette.text.primary }} // Blue text
             >
               AskDB - Data Discovery
             </Typography>
             <Typography 
               variant="h6" 
               noWrap 
-              sx={{ flexGrow: 1, color: theme.palette.primary.main }} // Blue text
+              sx={{ flexGrow: 1, color: theme.palette.text.primary }} // Blue text
             >
               &nbsp; AI-powered tools for analyzing databases
             </Typography>
           </Box>
         </Box>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <FormControlLabel
+          {/* <FormControlLabel
             value="end"
             control={
               <Switch
-                checked={currentTheme.palette.mode === "dark"}
+                checked={currentTheme.palette.mode === "light"}
                 onChange={toggleTheme}
-                color="secondary"
+                color="default"
               />
             }
             label="Dark"
             labelPlacement="end"
-          />
+          /> */}
           <AvatarMenu />
         </Box>
       </Toolbar>

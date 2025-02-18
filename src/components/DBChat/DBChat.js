@@ -25,8 +25,13 @@ const DBChat = (props) => {
   const handleSubmit = async () => {
     if (!inputText.trim()) return; // Do nothing if input is empty.
 
-    // Capture the original user query.
     const submittedQuery = inputText;
+    
+    // Immediately clear the data display by passing empty data to the parent.
+    if (props.tableSet) {
+      props.tableSet({ rows: [], query: "", userQuery: submittedQuery });
+    }
+
     setLoading(true);
 
     try {
@@ -37,13 +42,10 @@ const DBChat = (props) => {
       );
 
       const data = response.data;
-      // Extract the SQL query from the response.
       const sqlQuery = data.query || "No SQL query generated.";
-      // Extract rows from the backend response (assuming they are under data.response.Query_1).
       const rows = data.response?.Query_1 || [];
 
-      // Pass the data to the parent via the tableSet callback.
-      // We pass the original submittedQuery so that DataDisplay shows exactly what the user asked.
+      // Update the data display with the new data.
       if (props.tableSet) {
         props.tableSet({ rows, query: sqlQuery, userQuery: submittedQuery });
       }

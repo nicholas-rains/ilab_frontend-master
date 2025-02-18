@@ -3,14 +3,8 @@ import { useTheme } from '@mui/material';
 import { Box, Paper, Typography, Divider } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useSQL } from '../../context/SqlContext';
+import { format } from 'sql-formatter'; // Updated import
 
-/**
- * @param {Array} data - rows for the data grid
- * @param {Array} columns - columns for the data grid
- * @param {string} title - title for the entire section
- * @param {string} query - the final SQL query
- * @param {string} userQuery - the user's original query
- */
 const DataDisplay = ({ data, columns, title, query, userQuery }) => {
   const theme = useTheme();
   const { showSQL } = useSQL();
@@ -30,6 +24,10 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
     }
   }, [query]);
 
+  // Format the SQL query if it exists using the named export 'format'
+  const formattedQuery =
+    query && query.length > 0 ? format(query) : '';
+
   return (
     <Paper
       sx={{
@@ -42,15 +40,13 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto' // Enables vertical scrolling
+        overflow: 'auto'
       }}
     >
-      {/* Title */}
       <Typography variant="h5" sx={{ mb: 2 }}>
         {title}
       </Typography>
 
-      {/* User Query Section */}
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         User Query:
       </Typography>
@@ -69,7 +65,6 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
 
       <Divider sx={{ my: 2 }} />
 
-      {/* SQL Query Section (Toggle-Controlled) */}
       {showSQL && (
         <>
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
@@ -93,19 +88,15 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
             >
               <code>
                 {cleared
-                  ? '-- SQL Query cleared.'
-                  : query && query.length > 0
-                  ? `-- SQL Query:\n${query}`
-                  : 'No SQL generated. Please ask a question to generate SQL.'}
+                  ? 'SQL Query cleared.'
+                  : formattedQuery || 'No SQL generated. Please ask a question to generate SQL.'}
               </code>
             </pre>
           </Box>
-
           <Divider sx={{ my: 2 }} />
         </>
       )}
 
-      {/* Data Grid Section */}
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         Data Results:
       </Typography>
