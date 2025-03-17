@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material';
-import { Box, Paper, Typography, Divider } from '@mui/material';
+import { Box, Paper, Typography, Divider, CircularProgress } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useSQL } from '../../context/SqlContext';
-import { format } from 'sql-formatter'; // Updated import
+import { format } from 'sql-formatter';
 
 const DataDisplay = ({ data, columns, title, query, userQuery }) => {
   const theme = useTheme();
@@ -25,8 +25,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
   }, [query]);
 
   // Format the SQL query if it exists using the named export 'format'
-  const formattedQuery =
-    query && query.length > 0 ? format(query) : '';
+  const formattedQuery = query && query.length > 0 ? format(query) : '';
 
   return (
     <Paper
@@ -40,7 +39,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto'
+        overflow: 'auto',
       }}
     >
       <Typography variant="h5" sx={{ mb: 2 }}>
@@ -79,18 +78,22 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
               width: '100%',
             }}
           >
-            <Typography
-              variant="body2"
-              sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-            >
-              {userQuery && !query
-                ? 'Generating SQL query...'
-                : (cleared
-                    ? 'No SQL Query yet.'
-                    : formattedQuery || 'No SQL generated. Please ask a question to generate SQL.'
-                  )
-              }
-            </Typography>
+            {userQuery && !query ? (
+              // Show CircularProgress if SQL query is being generated.
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Typography
+                variant="body2"
+                sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+              >
+                {cleared
+                  ? 'No SQL Query yet.'
+                  : formattedQuery ||
+                    'No SQL generated. Please ask a question to generate SQL.'}
+              </Typography>
+            )}
           </Box>
           <Divider sx={{ my: 2 }} />
         </>
@@ -116,9 +119,21 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
             rowsPerPageOptions={[5, 10, 25]}
           />
         ) : (
-          <Typography variant="body2">
-            {userQuery ? "Generating data..." : "No data yet."}
-          </Typography>
+          userQuery ? (
+            // Show CircularProgress while data is loading.
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Typography variant="body2">No data yet.</Typography>
+          )
         )}
       </Box>
     </Paper>
