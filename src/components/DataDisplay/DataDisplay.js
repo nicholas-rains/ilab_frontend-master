@@ -31,23 +31,24 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
     <Paper
       sx={{
         width: '100%',
-        maxWidth: '100%', // Paper never expands wider than its container
+        maxWidth: '100%', // Ensure the Paper never exceeds its container's width
         margin: '2rem 0',
         padding: '20px',
-        minHeight: '80vh',
-        maxHeight: '80vh',
+        height: '80vh', // Fixed height for the entire Paper
         border: '1px solid #ccc',
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
         display: 'flex',
         flexDirection: 'column',
-        overflowX: 'hidden', // No horizontal scrolling on Paper
-        overflowY: 'auto',   // Vertical scrolling for the entire Paper
+        overflowY: 'auto',   // Enable vertical scrolling for the entire Paper
+        overflowX: 'hidden', // Prevent horizontal scrolling on the Paper itself
       }}
     >
+      {/* Title */}
       <Typography variant="h5" sx={{ mb: 2 }}>
         {title}
       </Typography>
 
+      {/* User Query */}
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         User Query:
       </Typography>
@@ -66,6 +67,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
 
       <Divider sx={{ my: 2 }} />
 
+      {/* SQL Display */}
       {showSQL && (
         <>
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
@@ -78,7 +80,8 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
               borderRadius: '8px',
               mb: 2,
               width: '100%',
-              minHeight: '100px', // Set a min-height to vertically center the spinner
+              maxHeight: '200px', // Limit SQL block height
+              overflowY: 'auto',  // Scroll SQL block vertically if content is too tall
             }}
           >
             {userQuery && !query ? (
@@ -109,14 +112,14 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         </>
       )}
 
+      {/* Data Results */}
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         Data Results:
       </Typography>
-      {/* Container for horizontal scrolling only on the grid */}
+      {/* Container that allows horizontal scrolling for the DataGrid */}
       <Box sx={{ width: '100%', overflowX: 'auto', overflowY: 'hidden' }}>
-        {data && data.length > 0 ? (
-          // Wrap the DataGrid in a container that expands as needed
-          <Box sx={{ width: 'max-content' }}>
+        <Box sx={{ width: 'max-content' }}>
+          {data && data.length > 0 ? (
             <DataGrid
               rows={data}
               columns={columns}
@@ -131,22 +134,22 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
               pageSize={5}
               rowsPerPageOptions={[5, 10, 25]}
             />
-          </Box>
-        ) : userQuery ? (
-          // Center CircularProgress for Data Results loading state
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '200px', // fixed height to center the spinner
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Typography variant="body2">No data yet.</Typography>
-        )}
+          ) : userQuery ? (
+            // Center CircularProgress for Data Results loading state
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '200px',
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Typography variant="body2">No data yet.</Typography>
+          )}
+        </Box>
       </Box>
     </Paper>
   );
