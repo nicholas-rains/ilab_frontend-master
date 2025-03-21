@@ -31,6 +31,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
     <Paper
       sx={{
         width: '100%',
+        maxWidth: '100%',
         margin: '2rem 0',
         padding: '20px',
         minHeight: '80vh',
@@ -39,7 +40,8 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto',
+        overflowX: 'hidden', // Prevent horizontal scroll on the Paper
+        overflowY: 'auto',   // Allow vertical scrolling for the entire Paper
       }}
     >
       <Typography variant="h5" sx={{ mb: 2 }}>
@@ -98,10 +100,10 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         Data Results:
       </Typography>
-      {/* Outer container enabling horizontal scroll */}
-      <Box sx={{ flexGrow: 1, width: '100%', overflowX: 'auto' }}>
-        {/* Inner container ensuring flexible width */}
-        <div style={{ minWidth: '100%' }}>
+      {/* Container for horizontal scrolling of the grid */}
+      <Box sx={{ width: '100%', overflowX: 'auto' }}>
+        {/* Inner container to allow the DataGrid to be as wide as it needs */}
+        <Box sx={{ width: 'max-content' }}>
           {data && data.length > 0 ? (
             <DataGrid
               rows={data}
@@ -132,7 +134,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
           ) : (
             <Typography variant="body2">No data yet.</Typography>
           )}
-        </div>
+        </Box>
       </Box>
     </Paper>
   );
