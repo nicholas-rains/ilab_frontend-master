@@ -84,14 +84,10 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
                 <CircularProgress />
               </Box>
             ) : (
-              <Typography
-                variant="body2"
-                sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-              >
+              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                 {cleared
                   ? 'No SQL Query yet.'
-                  : formattedQuery ||
-                    'No SQL generated. Please ask a question to generate SQL.'}
+                  : formattedQuery || 'No SQL generated. Please ask a question to generate SQL.'}
               </Typography>
             )}
           </Box>
@@ -102,24 +98,26 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
       <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
         Data Results:
       </Typography>
-      <Box sx={{ flexGrow: 1 }}>
-        {data && data.length > 0 ? (
-          <DataGrid
-            rows={data}
-            columns={columns}
-            getRowId={(row) =>
-              row.customer_id ||
-              row.account_id ||
-              row.id ||
-              `${Math.random()}-${Date.now()}`
-            }
-            autoHeight
-            disableSelectionOnClick
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
-        ) : (
-          userQuery ? (
+      {/* Outer container enabling horizontal scroll */}
+      <Box sx={{ flexGrow: 1, width: '100%', overflowX: 'auto' }}>
+        {/* Inner container ensuring flexible width */}
+        <div style={{ minWidth: '100%' }}>
+          {data && data.length > 0 ? (
+            <DataGrid
+              rows={data}
+              columns={columns}
+              getRowId={(row) =>
+                row.customer_id ||
+                row.account_id ||
+                row.id ||
+                `${Math.random()}-${Date.now()}`
+              }
+              autoHeight
+              disableSelectionOnClick
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          ) : userQuery ? (
             // Show CircularProgress while data is loading.
             <Box
               sx={{
@@ -133,8 +131,8 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
             </Box>
           ) : (
             <Typography variant="body2">No data yet.</Typography>
-          )
-        )}
+          )}
+        </div>
       </Box>
     </Paper>
   );
