@@ -80,7 +80,7 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
           >
             {userQuery && !query ? (
               // Show CircularProgress if SQL query is being generated.
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Box>
                 <CircularProgress />
               </Box>
             ) : (
@@ -100,9 +100,10 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         Data Results:
       </Typography>
       <Box sx={{ flexGrow: 1 }}>
-        {data && data.length > 0 ? (
-          <Box sx={{ width: '100%', overflowX: 'auto' }}>
-            <Box sx={{ width: 'max-content' }}>
+        {/* Wrap DataGrid in a horizontal scroll container */}
+        <Box sx={{ width: '100%', overflowX: 'auto' }}>
+          <Box sx={{ width: 'max-content' }}>
+            {data && data.length > 0 ? (
               <DataGrid
                 rows={data}
                 columns={columns}
@@ -117,26 +118,18 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 25]}
               />
-            </Box>
+            ) : (
+              userQuery ? (
+                // Show CircularProgress while data is loading (left aligned)
+                <Box sx={{ minHeight: '200px', width: '100%' }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <Typography variant="body2">No data yet.</Typography>
+              )
+            )}
           </Box>
-        ) : (
-          userQuery ? (
-            // Show CircularProgress while data is loading, centered in a fixed-height container
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '200px',
-                width: '100%',
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            <Typography variant="body2">No data yet.</Typography>
-          )
-        )}
+        </Box>
       </Box>
     </Paper>
   );
