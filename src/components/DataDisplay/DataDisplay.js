@@ -100,10 +100,9 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
         Data Results:
       </Typography>
       <Box sx={{ flexGrow: 1 }}>
-        {/* Added horizontal scroll container for the DataGrid */}
-        <Box sx={{ width: '100%', overflowX: 'auto' }}>
-          <Box sx={{ width: 'max-content' }}>
-            {data && data.length > 0 ? (
+        {data && data.length > 0 ? (
+          <Box sx={{ width: '100%', overflowX: 'auto' }}>
+            <Box sx={{ width: 'max-content' }}>
               <DataGrid
                 rows={data}
                 columns={columns}
@@ -118,25 +117,26 @@ const DataDisplay = ({ data, columns, title, query, userQuery }) => {
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 25]}
               />
-            ) : (
-              userQuery ? (
-                // Show CircularProgress while data is loading.
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                  }}
-                >
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <Typography variant="body2">No data yet.</Typography>
-              )
-            )}
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          userQuery ? (
+            // Show CircularProgress while data is loading, centered in a fixed-height container
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '200px',
+                width: '100%',
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Typography variant="body2">No data yet.</Typography>
+          )
+        )}
       </Box>
     </Paper>
   );
